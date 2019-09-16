@@ -75,7 +75,7 @@ time.sleep(1.0)
 command = "v4l2-ctl -d {} --set-ctrl=brightness=193 \
                           --set-ctrl=contrast=172 \
                           --set-ctrl=saturation=143 \
-                          --set-ctrl=gain=50 \
+                          --set-ctrl=gain=130 \
                           --set-ctrl=sharpness=255 \
                           --set-ctrl=exposure_auto=1 \
                           --set-ctrl=exposure_auto_priority=1 \
