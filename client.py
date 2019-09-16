@@ -72,11 +72,11 @@ camera_id = find(10)
 vs = VideoStream(src=camera_id, resolution=(1028, 720)).start()
 time.sleep(1.0)
 
-command = "v4l2-ctl -d {} --set-ctrl=brightness=193 \
-                          --set-ctrl=contrast=172 \
-                          --set-ctrl=saturation=143 \
-                          --set-ctrl=gain=120 \
-                          --set-ctrl=sharpness=255 \
+command = "v4l2-ctl -d {} --set-ctrl=brightness=180 \
+                          --set-ctrl=contrast=150 \
+                          --set-ctrl=saturation=140 \
+                          --set-ctrl=gain=130 \
+                          --set-ctrl=sharpness=200 \
                           --set-ctrl=exposure_auto=1 \
                           --set-ctrl=exposure_auto_priority=1 \
                           --set-ctrl=exposure_absolute=156 \
