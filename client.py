@@ -2,6 +2,7 @@
 # python client.py --server-ip SERVER_IP
 
 # import the necessary packages
+import imutils
 from imutils.video import VideoStream
 from imagezmq import imagezmq
 import argparse
@@ -14,6 +15,8 @@ import subprocess
 ap = argparse.ArgumentParser()
 ap.add_argument("-s", "--server-ip", required=True,
 	help="ip address of the server to which the client will connect")
+ap.add_argument("-d", "--debug", action='store_true',
+	help="debug mode")
 args = vars(ap.parse_args())
 
 
@@ -66,7 +69,7 @@ rpiName = socket.gethostname()
 #vs = VideoStream(usePiCamera=True).start()
 camera_id = find(10)
 # camera_id = 0
-vs = VideoStream(src=camera_id).start()
+vs = VideoStream(src=camera_id, resolution=(1028, 720)).start()
 time.sleep(1.0)
 
 command = "v4l2-ctl -d {} --set-ctrl=brightness=193 \
@@ -78,7 +81,7 @@ command = "v4l2-ctl -d {} --set-ctrl=brightness=193 \
                           --set-ctrl=exposure_auto_priority=1 \
                           --set-ctrl=exposure_absolute=156 \
                           --set-ctrl=focus_auto=0 \
-                          --set-ctrl=zoom_absolute=200 \
+                          --set-ctrl=zoom_absolute=150 \
                           --set-fmt-video=width=1028 \
                           --set-fmt-video=height=720".format(camera_id)
 output = subprocess.call(command, shell=True)
@@ -89,8 +92,15 @@ while True:
 		start_time = time.time()
 		frame = vs.read()
 		if hasattr(frame, 'flags'):
+			# frame = imutils.resize(frame, width=1028, height=720)
 			sender.send_image(rpiName, frame)
-		print('fps', 1/(time.time() - start_time))
+            	
+		if args["debug"]:
+			print('fps', 1/(time.time() - start_time))
+            
+			cv2.imshow('Frame', frame)
+			if cv2.waitKey(25) & 0xFF == ord('q'):
+				break
 	except Exception as e:
 		print('error: {}'.format(e)) 
 
