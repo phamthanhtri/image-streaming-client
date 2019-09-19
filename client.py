@@ -14,9 +14,9 @@ import subprocess
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-s", "--server-ip", required=True,
-	help="ip address of the server to which the client will connect")
+    help="ip address of the server to which the client will connect")
 ap.add_argument("-d", "--debug", action='store_true',
-	help="debug mode")
+    help="debug mode")
 args = vars(ap.parse_args())
 
 
@@ -35,11 +35,11 @@ def find(max_id):
             print('Found a camera device, id: {}'.format(device))
             # show preview
             _, frame = cap.read()
-            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            plt.imshow(rgb_frame, aspect='equal', extent=None)
-            plt.draw()
-            plt.axis('off')
-            plt.pause(0.001)
+            # rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            # plt.imshow(rgb_frame, aspect='equal', extent=None)
+            # plt.draw()
+            # plt.axis('off')
+            # plt.pause(0.001)
 
             cap.release()
             break
@@ -53,13 +53,13 @@ def find(max_id):
 
     return device
 
-	
+    
 # initialize the ImageSender object with the socket address of the
 # server
 sender = imagezmq.ImageSender(connect_to="tcp://{}:5555".format(
-	args["server_ip"]))
+    args["server_ip"]))
 # sender = imagezmq.ImageSender(connect_to="http://{}".format(
-# 	args["server_ip"]))
+#   args["server_ip"]))
 # sender = imagezmq.ImageSender(connect_to="tcp://127.0.0.1:5555")
 
 
@@ -72,37 +72,37 @@ camera_id = find(10)
 vs = VideoStream(src=camera_id, resolution=(1028, 720)).start()
 time.sleep(1.0)
 
-command = "v4l2-ctl -d {} --set-ctrl=brightness=180 \
-                          --set-ctrl=contrast=150 \
-                          --set-ctrl=saturation=140 \
-                          --set-ctrl=gain=130 \
-                          --set-ctrl=sharpness=200 \
-                          --set-ctrl=exposure_auto=1 \
-                          --set-ctrl=exposure_auto_priority=1 \
-                          --set-ctrl=exposure_absolute=156 \
-                          --set-ctrl=focus_auto=0 \
-                          --set-ctrl=zoom_absolute=150 \
-                          --set-fmt-video=width=1028 \
-                          --set-fmt-video=height=720".format(camera_id)
-output = subprocess.call(command, shell=True)
+# command = "v4l2-ctl -d {} --set-ctrl=brightness=180 \
+#                           --set-ctrl=contrast=150 \
+#                           --set-ctrl=saturation=140 \
+#                           --set-ctrl=gain=130 \
+#                           --set-ctrl=sharpness=200 \
+#                           --set-ctrl=exposure_auto=1 \
+#                           --set-ctrl=exposure_auto_priority=1 \
+#                           --set-ctrl=exposure_absolute=156 \
+#                           --set-ctrl=focus_auto=0 \
+#                           --set-ctrl=zoom_absolute=150 \
+#                           --set-fmt-video=width=1028 \
+#                           --set-fmt-video=height=720".format(camera_id)
+# output = subprocess.call(command, shell=True)
  
 while True:
-	# read the frame from the camera and send it to the server
-	try:
-		start_time = time.time()
-		frame = vs.read()
-		if hasattr(frame, 'flags'):
-			# frame = imutils.resize(frame, width=1028, height=720)
-			sender.send_image(rpiName, frame)
-            	
-		if args["debug"]:
-			print('fps', 1/(time.time() - start_time))
+    # read the frame from the camera and send it to the server
+    try:
+        start_time = time.time()
+        frame = vs.read()
+        if hasattr(frame, 'flags'):
+            # frame = imutils.resize(frame, width=1028, height=720)
+            sender.send_image(rpiName, frame)
+                
+        if args["debug"]:
+            print('fps', 1/(time.time() - start_time))
             
-			cv2.imshow('Frame', frame)
-			if cv2.waitKey(25) & 0xFF == ord('q'):
-				break
-	except Exception as e:
-		print('error: {}'.format(e)) 
+            # cv2.imshow('Frame', frame)
+            # if cv2.waitKey(25) & 0xFF == ord('q'):
+            #   break
+    except Exception as e:
+        print('error: {}'.format(e)) 
 
 
 
